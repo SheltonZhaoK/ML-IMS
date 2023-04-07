@@ -3,3 +3,4 @@ numpy
 xgboost
 tensorflow
 scikit-learn
+scanpy
