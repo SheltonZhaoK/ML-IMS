@@ -51,7 +51,40 @@ By default, the system runs serially on one processor. User could add a flag -mc
 ```
 python3 run_IMS.py <dataset name> -mc
 ```
-The script is flexible that the user could select ML classifiers by just changing the line "auditors = ["FFNN", "XGB", "KNN"]" in run_IMS.py. The training and testing of models are wrapped in the model.py. If user wants to add custom ML classifiers, one could simply implement the training and testing function, and add to the following lines in model.py:
+The script is flexible that the user could add custom data or change parameters all in IMS_parameters.yaml file without touching the python script:
+```
+Directories:
+   inputDir: ../data/
+   outputDir: ../output/
+
+Auditors:
+  - FFNN
+  - XGB
+  - KNN
+
+Auditing:
+  numRepeats: 5
+  numTests: 20
+  trainTestSplit: 0.7
+  testSampling: 0.2
+
+Batches:
+  ifnb: stim
+  panc8: tech
+  pbmcsca: Method
+  bone_marrow: sample_id
+
+Integrations:
+  - cca
+  - sctransform
+  - harmony
+  - fastmnn
+  - bbknn
+  - ingest
+
+batchExplore: True
+```
+If user wants to add custom ML classifiers, one could simply implement the training and testing function, add to the following lines in wrapper functions in model.py, and edit the "Auditors" section in IMS_parameters.yaml:
 ```
 def train_model(train_x, train_y, num_labels, name):
     if name == "FFNN":
@@ -69,4 +102,3 @@ def test_model(model, test_data, test_labels, result, name):
     elif name == "KNN":
         test_knn_model(model, test_data, test_labels, result)
 ```
-To add custom data or classifiers, for convenience user will only need to change the custom input files directory and output results directory in run_IMS.py, model selection in run_IMS.py, and implementation of new models in model.py. If the datasets are large, 100 rounds of auditing can be reduced by changing the "numRepeats" variable in run_IMS.py.
