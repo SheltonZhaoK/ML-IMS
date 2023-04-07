@@ -4,3 +4,4 @@ xgboost
 tensorflow
 scikit-learn
 scanpy
+pyyaml
