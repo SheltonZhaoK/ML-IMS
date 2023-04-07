@@ -30,9 +30,9 @@ pip3 install -r requirements.txt
 ```
 
 ## Data Preparation
-The package flexibly takes different integrated datasets as an input to the system and allows user to integrate their own datasets with custom integration methods. The only limitation is that the integrated datasets should have the same naming conventions and be stored in an iterable manner (see the naming convention and arrangement of demo real life datasets).
+The package flexibly takes different integrated datasets as inputs to the system and allows user to integrate their own datasets with custom integration methods. The only limitation is that the integrated datasets should have the same naming conventions and be stored in an iterable manner (see the naming convention and arrangement of demo real-life datasets).
 
-Here, we provide three demo scripts to preprocess, integrate, and reproduce the real world datasets. The integrations are done in R and Python. Therefore, 4 related R packages should be installed SeuratData, SeuratDisk, scrnabench, and Seurat. If user wants to use their own dataset, one may directly jump to the next section. To be noticed, the preprocessing and integration will take a long time for large size real-world datasets. We also uploaded the datasets to be directly used. 
+Here, we provide three demo scripts to preprocess, integrate, and reproduce the real-world datasets. The integrations are done in R and Python. Therefore, 4 related R packages should be installed SeuratData, SeuratDisk, scrnabench, and Seurat. If user wants to use their own dataset, one may directly jump to the next section. To be noticed, the preprocessing and integration will take a long time for large size real-world datasets. We also uploaded the datasets to be directly used. 
 
 To reproduce the real-world datasets, following commands should be executed:
 ```
