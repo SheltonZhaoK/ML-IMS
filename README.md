@@ -43,6 +43,34 @@ Python3 integrated_real.py
 integrate_real.R and prepare_real_h5ad.R could be run parallely, and integrated_real.py must be run after the execution of prepare_real_h5ad.R.
 
 ## Test Demo
+To run the Integration Method Selection system, please execute the following:
+```
+python3 run_IMS.py <dataset name>
+```
+By default, the system runs serially on one processor. User could add a flag -mc to the end of the command to enable multi-processing, and the speedup will depend on the number of processors avaible in the machine.
+```
+python3 run_IMS.py <dataset name> -mc
+```
+The scipt is flexible that the user could select ML classifiers by just changing the line "auditors = ["FFNN", "XGB", "KNN"]" in run_IMS.py. The training and testing of models are wrapped in the model.py. If user wants to add custom ML classifiers, one could simply implement the training and testing function, and add to the following lines in model.py:
+```
+def train_model(train_x, train_y, num_labels, name):
+    if name == "FFNN":
+        return train_ffnn_model(train_x, train_y, num_labels)
+    elif  name == "XGB":
+        return train_xgb_model(train_x, train_y, num_labels)
+    elif name == "KNN":
+        return train_knn_model(train_x, train_y, num_labels)
+
+def test_model(model, test_data, test_labels, result, name):
+    if name == "FFNN":
+        test_ffnn_model(model, test_data, test_labels, result)
+    elif  name == "XGB":
+        test_xgb_model(model, test_data, test_labels, result)
+    elif name == "KNN":
+        test_knn_model(model, test_data, test_labels, result)
+```
+To add custom data or classifiers, for convenience user will only need to change the custom input files directory and output results directory in run_IMS.py, model selection in run_IMS.py, and implementation of new models in model.py. If the datasets are large, 100 rounds of auditing can be reduced by changing the "numRepeats" variable in run_IMS.py.
+
 
 
 
