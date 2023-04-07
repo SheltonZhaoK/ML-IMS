@@ -59,7 +59,7 @@ def train_model(train_x, train_y, num_labels, name):
     elif  name == "XGB":
         return train_xgb_model(train_x, train_y, num_labels)
     elif name == "KNN":
-        return train_knn_model(train_x, train_y, num_labels)
+        return train_knn_model(train_x, train_y, num_labels) 
 
 def test_model(model, test_data, test_labels, result, name):
     if name == "FFNN":
@@ -70,10 +70,3 @@ def test_model(model, test_data, test_labels, result, name):
         test_knn_model(model, test_data, test_labels, result)
 ```
 To add custom data or classifiers, for convenience user will only need to change the custom input files directory and output results directory in run_IMS.py, model selection in run_IMS.py, and implementation of new models in model.py. If the datasets are large, 100 rounds of auditing can be reduced by changing the "numRepeats" variable in run_IMS.py.
-
-
-
-
-
-
-
