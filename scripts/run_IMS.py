@@ -57,9 +57,16 @@ def compute_average_residues(result, columns):
 Audit dataset
     :param dataset: a panda dataFrame
     :param results: a list of panda dataFrames
-    :param numRepeats: an int numTests, auditors, col2balance, minTrainingCells
+    :param numRepeats: an integer value of rounds of auditing
+    :param numTests: an integer value of number of test per round
+    :param auditors: a list of string of the name of ML auditors
+    :param col2balance: a string of label predicted
+    :param minTrainingCells: a fraction of train test split
+    :param minTestCells: a fraction of sampling testing data
+
+    :return results: a list of panda dataFrames for multiprocessing callback, not necessary for CPU
 '''
-def audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance, minTrainingCells):
+def audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance, minTrainingCells, minTestCells):
     for i in range(1, numRepeats+1):
         train_x, train_y, numlabels  = dataset.makeTrainingData(col2balance, minTrainingCells)
         models = [train_model(train_x, train_y, numlabels, auditor) for auditor in auditors]
@@ -69,6 +76,13 @@ def audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance,
                 test_model(models[i], test_x, test_y, results[i], auditor)
     return results
 
+'''
+Display the information of the averaged classification accuracy of each batch over auditors
+    :param dataset: a panda dataFrame
+    :param results: a list of panda dataFrames
+    :param columns: a list of string of batch names
+    :param integration: a string of integration method
+'''
 def explore_ind_batch_effect(batchReport, results, columns, integration):
     baseline = 1.0 / len(columns)
     if len(batchReport) == 0:
@@ -85,12 +99,21 @@ def explore_ind_batch_effect(batchReport, results, columns, integration):
     results.insert(0, integration)
     batchReport.loc[len(batchReport)] = results
 
+'''
+Print and export the results
+    :param report: a panda dataFrame
+    :param batchReport: a panda dataFrame
+    :param batchExplore: a boolean
+'''
 def format_results(report, batchReport, batchExplore):
     if batchExplore == True:
         print(batchReport)
     report = report.sort_values(by=['IMSS'])
     print(report)
 
+    '''
+    Change output directory if necessary
+    '''
     report.to_csv(f'../output/{benchmark}_integration_selection_{"".join(auditors)}.csv')
     batchReport.to_csv(f'../output/{benchmark}_integrations_batch_explore.csv')
 
@@ -100,6 +123,9 @@ def main(inTrainingCells, minTestCells, numTests, numRepeats, directory, benchma
 
     start = time.time()
     for integration in integrations:
+        '''
+        Change input data if necessray
+        '''
         col2balance, label = batchDict[benchmark], batchDict[benchmark]
         dataDir = f'{directory}{benchmark}/'
         inputFile = f'{dataDir}{integration}_umap.csv'
@@ -114,10 +140,10 @@ def main(inTrainingCells, minTestCells, numTests, numRepeats, directory, benchma
         results = [pd.DataFrame(columns = columns)] * len(auditors)
 
         if multiprocessing == "-c":
-            audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance, minTrainingCells)
+            audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance, minTrainingCells, minTestCells)
         elif multiprocessing == "-mc":
             pool = Pool()
-            processes_objects = [pool.apply_async(audit_dataset, args = (dataset, results, 1, numTests, auditors,col2balance, minTrainingCells)) for i in range(numRepeats)]
+            processes_objects = [pool.apply_async(audit_dataset, args = (dataset, results, 1, numTests, auditors,col2balance, minTrainingCells, minTestCells)) for i in range(numRepeats)]
             pool.close()
             pool.join()
             aggregated_audit_results = [objects.get() for objects in processes_objects]
@@ -140,12 +166,21 @@ if __name__ == "__main__":
         multiprocessing = sys.argv[2]
     benchmark = sys.argv[1]
 
-    numRepeats, numTests, minTrainingCells, minTestCells = 5, 20, 0.7, 0.2 #fixme
+    numRepeats, numTests, minTrainingCells, minTestCells = 100, 20, 0.7, 0.2
     batchExplore = True
     
+    '''
+    Change data directory when necessary 
+    Add custom integrations or exclude existing one
+    Datasets should have the same naming convention
+    '''
     batchDict = {"ifnb" : 'stim', "panc8": "tech", "pbmcsca": "Method", "bone_marrow" : "sample_id"}
     directory = '../data/' 
     integrations = ['cca', 'sctransform','harmony', 'fastmnn', 'bbknn', 'ingest']
+
+    '''
+    Add custom auditors or exclude existing one
+    '''
     auditors = ["FFNN", "XGB", "KNN"]
 
     main(minTrainingCells, minTestCells, numTests, numRepeats, directory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore)
