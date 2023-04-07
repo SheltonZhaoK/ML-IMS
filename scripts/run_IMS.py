@@ -184,7 +184,3 @@ if __name__ == "__main__":
     auditors = ["FFNN", "XGB", "KNN"]
 
     main(minTrainingCells, minTestCells, numTests, numRepeats, directory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore)
-
-    
-
-    
