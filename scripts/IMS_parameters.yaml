@@ -1,0 +1,30 @@
+Directories:
+   inputDir: ../data/
+   outputDir: ../output/
+
+Auditors:
+  - FFNN
+  - XGB
+  - KNN
+
+Auditing:
+  numRepeats: 5
+  numTests: 20
+  trainTestSplit: 0.7
+  testSampling: 0.2
+
+Batches:
+  ifnb: stim
+  panc8: tech
+  pbmcsca: Method
+  bone_marrow: sample_id
+
+Integrations:
+  - cca
+  - sctransform
+  - harmony
+  - fastmnn
+  - bbknn
+  - ingest
+
+batchExplore: True

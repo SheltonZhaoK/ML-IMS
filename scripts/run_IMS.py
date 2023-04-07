@@ -1,4 +1,4 @@
-import sys, subprocess, random, os, time
+import sys, subprocess, random, os, time, yaml
 import numpy as np
 import pandas as pd
 
@@ -104,8 +104,9 @@ Print and export the results
     :param report: a panda dataFrame
     :param batchReport: a panda dataFrame
     :param batchExplore: a boolean
+    :param outputDirectory: a string
 '''
-def format_results(report, batchReport, batchExplore):
+def format_results(report, batchReport, batchExplore, outputDirectory):
     if batchExplore == True:
         print(batchReport)
     report = report.sort_values(by=['IMSS'])
@@ -114,10 +115,10 @@ def format_results(report, batchReport, batchExplore):
     '''
     Change output directory if necessary
     '''
-    report.to_csv(f'../output/{benchmark}_integration_selection_{"".join(auditors)}.csv')
-    batchReport.to_csv(f'../output/{benchmark}_integrations_batch_explore.csv')
+    report.to_csv(f'{outputDirectory}{benchmark}_integration_selection_{"".join(auditors)}.csv')
+    batchReport.to_csv(f'{outputDirectory}{benchmark}_integrations_batch_explore.csv')
 
-def main(inTrainingCells, testSampling, numTests, numRepeats, directory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore):
+def main(inTrainingCells, testSampling, numTests, numRepeats, inputDirectory, outputDirectory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore):
     report = pd.DataFrame(columns = ["Integrations", "IMSS"])
     batchReport = pd.DataFrame()
 
@@ -127,7 +128,7 @@ def main(inTrainingCells, testSampling, numTests, numRepeats, directory, benchma
         Change input data if necessray
         '''
         col2balance, label = batchDict[benchmark], batchDict[benchmark]
-        dataDir = f'{directory}{benchmark}/'
+        dataDir = f'{inputDirectory}{benchmark}/'
         inputFile = f'{dataDir}{integration}_umap.csv'
         labelFile = f'{dataDir}{integration}_labels.csv'
 
@@ -157,7 +158,7 @@ def main(inTrainingCells, testSampling, numTests, numRepeats, directory, benchma
         average_residues = [compute_average_residues(i, columns) for i in results]
         report.loc[len(report)] = [integration, sum(average_residues)/len(average_residues)]
 
-    format_results(report, batchReport, batchExplore)
+    format_results(report, batchReport, batchExplore, outputDirectory)
     print(f'Execution time: {time.time()-start} seconds')
 
 if __name__ == "__main__":
@@ -166,21 +167,20 @@ if __name__ == "__main__":
         multiprocessing = sys.argv[2]
     benchmark = sys.argv[1]
 
-    numRepeats, numTests, trainTestSplit, testSampling = 100, 20, 0.7, 0.2
-    batchExplore = True
+    paramFile = open("./IMS_parameters.yaml")
+    param = yaml.load(paramFile, Loader=yaml.FullLoader)
+
+    numRepeats = param['Auditing']['numRepeats']
+    numTests = param['Auditing']['numTests']
+    trainTestSplit = param['Auditing']['trainTestSplit']
+    testSampling = param['Auditing']['testSampling']
+
+    inputDirectory, outputDirectory = param['Directories']['inputDir'], param['Directories']['outputDir']
     
-    '''
-    Change data directory when necessary 
-    Add custom integrations or exclude existing one
-    Datasets should have the same naming convention
-    '''
-    batchDict = {"ifnb" : 'stim', "panc8": "tech", "pbmcsca": "Method", "bone_marrow" : "sample_id"}
-    directory = '../data/' 
-    integrations = ['cca', 'sctransform','harmony', 'fastmnn', 'bbknn', 'ingest']
+    integrations = param['Integrations']
+    batchExplore = param['batchExplore']
+    batchDict = param['Batches']
 
-    '''
-    Add custom auditors or exclude existing one
-    '''
-    auditors = ["FFNN", "XGB", "KNN"]
+    auditors = param['Auditors']
 
-    main(trainTestSplit, testSampling, numTests, numRepeats, directory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore)
+    main(trainTestSplit, testSampling, numTests, numRepeats, inputDirectory, outputDirectory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore)
