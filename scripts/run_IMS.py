@@ -61,17 +61,17 @@ Audit dataset
     :param numTests: an integer value of number of test per round
     :param auditors: a list of string of the name of ML auditors
     :param col2balance: a string of label predicted
-    :param minTrainingCells: a fraction of train test split
-    :param minTestCells: a fraction of sampling testing data
+    :param trainTestSplit: a fraction of train test split
+    :param testSampling: a fraction of sampling testing data
 
     :return results: a list of panda dataFrames for multiprocessing callback, not necessary for CPU
 '''
-def audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance, minTrainingCells, minTestCells):
+def audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance, trainTestSplit, testSampling):
     for i in range(1, numRepeats+1):
-        train_x, train_y, numlabels  = dataset.makeTrainingData(col2balance, minTrainingCells)
+        train_x, train_y, numlabels  = dataset.makeTrainingData(col2balance, trainTestSplit)
         models = [train_model(train_x, train_y, numlabels, auditor) for auditor in auditors]
         for j in range(1, numTests+1):
-            test_x, test_y = dataset.makeTestData(col2balance, minTestCells)
+            test_x, test_y = dataset.makeTestData(col2balance, testSampling)
             for i, auditor in enumerate(auditors):
                 test_model(models[i], test_x, test_y, results[i], auditor)
     return results
@@ -117,7 +117,7 @@ def format_results(report, batchReport, batchExplore):
     report.to_csv(f'../output/{benchmark}_integration_selection_{"".join(auditors)}.csv')
     batchReport.to_csv(f'../output/{benchmark}_integrations_batch_explore.csv')
 
-def main(inTrainingCells, minTestCells, numTests, numRepeats, directory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore):
+def main(inTrainingCells, testSampling, numTests, numRepeats, directory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore):
     report = pd.DataFrame(columns = ["Integrations", "IMSS"])
     batchReport = pd.DataFrame()
 
@@ -140,10 +140,10 @@ def main(inTrainingCells, minTestCells, numTests, numRepeats, directory, benchma
         results = [pd.DataFrame(columns = columns)] * len(auditors)
 
         if multiprocessing == "-c":
-            audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance, minTrainingCells, minTestCells)
+            audit_dataset(dataset, results, numRepeats, numTests, auditors, col2balance, trainTestSplit, testSampling)
         elif multiprocessing == "-mc":
             pool = Pool()
-            processes_objects = [pool.apply_async(audit_dataset, args = (dataset, results, 1, numTests, auditors,col2balance, minTrainingCells, minTestCells)) for i in range(numRepeats)]
+            processes_objects = [pool.apply_async(audit_dataset, args = (dataset, results, 1, numTests, auditors,col2balance, trainTestSplit, testSampling)) for i in range(numRepeats)]
             pool.close()
             pool.join()
             aggregated_audit_results = [objects.get() for objects in processes_objects]
@@ -166,7 +166,7 @@ if __name__ == "__main__":
         multiprocessing = sys.argv[2]
     benchmark = sys.argv[1]
 
-    numRepeats, numTests, minTrainingCells, minTestCells = 100, 20, 0.7, 0.2
+    numRepeats, numTests, trainTestSplit, testSampling = 100, 20, 0.7, 0.2
     batchExplore = True
     
     '''
@@ -183,4 +183,4 @@ if __name__ == "__main__":
     '''
     auditors = ["FFNN", "XGB", "KNN"]
 
-    main(minTrainingCells, minTestCells, numTests, numRepeats, directory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore)
+    main(trainTestSplit, testSampling, numTests, numRepeats, directory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore)

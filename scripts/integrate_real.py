@@ -50,7 +50,6 @@ def main(inputDir, outputDir):
         labels.to_csv(outputDir + reference + "/" + "bbknn_labels.csv")
         print(reference, "BBKNN", " Done")
 
-
         #run ingest integration
         adata = sc.read(fileName)
         adata = run_ingest(adata, batchkey = batchDict[reference])
