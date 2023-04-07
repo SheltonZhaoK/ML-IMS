@@ -1,5 +1,5 @@
 # Tutorial: Detection of Algorithmic and Data Biases in Integrated Single-Cell RNA-Sequencing Datasets
-<img src="./workflow.pdf" width="128"/>
+![Machine Learning Based Integration Method Selection](./workflow.png)
 This package aims to detect datasets batch-effects from batch-corrected integrated scRNA-seq datasets and to automaticlly find the best integration methods using Machine Learning Auditors.
 
 The tutorial is arranged as follows:
