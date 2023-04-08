@@ -63,7 +63,7 @@ Auditors:
   - KNN
 
 Auditing:
-  numRepeats: 5
+  numRepeats: 100
   numTests: 20
   trainTestSplit: 0.7
   testSampling: 0.2
