@@ -102,6 +102,8 @@ def test_model(model, test_data, test_labels, result, name):
     elif name == "KNN":
         test_knn_model(model, test_data, test_labels, result)
 ```
-By default, the system generates two output results stored in ../output/. The first output result is named as <dataset name>_integration_selection_<auditors>FFNNXGBKNN.csv (ifnb_integration_selection_FFNNXGBKNN.csv for example) which reports the sorted the IMS score to select the best integration methods. The second output result is named as <dataset name>_integrations_batch_explore.csv (ifnb_integrations_batch_explore.csv for example) which reports the averaged classification accuracy of each batch over auditors. If user does not interested in seeing batch-related information, one may set batchExplore in IMS_parameters.yaml to False.
+By default, the system generates two output results stored in ../output/. The first output result is named as {dataset name}_integration_selection_{auditors}.csv (ifnb_integration_selection_FFNNXGBKNN.csv for example) which reports the sorted IMS score to select the best integration methods. The second output result is named as {dataset name}_integrations_batch_explore.csv (ifnb_integrations_batch_explore.csv for example) which reports the averaged classification accuracy of each batch over auditors. If user is not interested in seeing batch-related information, one may set batchExplore in IMS_parameters.yaml to False.
+
+Additionally, in Auditing section of IMS_parameters.yaml, the variable numRepeats could be reduced to smaller number such as 50, which will improve the speed and not significantly affect the results. However, such an adjustment might cause incomprehensive representation of the datasets.
 
 
