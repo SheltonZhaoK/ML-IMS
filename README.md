@@ -47,7 +47,7 @@ To run the Integration Method Selection system, please execute the following:
 ```
 python3 run_IMS.py <dataset name>
 ```
-By default, the system runs serially on one processor. User could add a flag -mc to the end of the command to enable multi-processing, and the speedup will depend on the number of processors available in the machine.
+By default, the system runs serially on one processor. User could add a flag -mc to the end of the command to enable multi-processing, and the speedup will depend on the number of processors available in the machine. For example, '''python3 run_IMS.py ifnb -mc'''
 ```
 python3 run_IMS.py <dataset name> -mc
 ```
