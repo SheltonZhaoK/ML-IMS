@@ -10,7 +10,7 @@ The tutorial is arranged as follows:
 ## Dependency requirements
 Begin by clone the repository.
 ```
-git clone https://github.com/SheltonZhaoK/Detection-of-Algorithmic-and-Data-Biases-in-Integrated-Single-Cell-RNA-Sequencing-Datasets.git
+git clone https://github.com/SheltonZhaoK/ML-IMS.git
 ```
 The scripts are written in Python. A virtual python environment can be created with following commands:
 ``` 
