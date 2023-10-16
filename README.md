@@ -106,4 +106,10 @@ By default, the system generates two output results stored in ../output/. The fi
 
 Additionally, in Auditing section of IMS_parameters.yaml, the variable numRepeats could be reduced to smaller number such as 50, which will improve the speed and not significantly affect the results. However, such an adjustment might cause incomprehensive representation of the datasets.
 
+## Citation
+To cite this work:
+```
+@inproceedings{Zhao_2023, address={New York, NY, USA}, series={BCB ’23}, title={An Ensemble Machine Learning Approach for Benchmarking and Selection of scRNA-seq Integration Methods}, ISBN={9798400701269}, url={https://dl.acm.org/doi/10.1145/3584371.3613072}, DOI={10.1145/3584371.3613072}, booktitle={Proceedings of the 14th ACM International Conference on Bioinformatics, Computational Biology, and Health Informatics}, publisher={Association for Computing Machinery}, author={Zhao, Konghao and Bhandari, Sapan and Whitener, Nathan P and Grayson, Jason M and Khuri, Natalia}, year={2023}, month=oct, pages={1–10}, collection={BCB ’23} }
+
+```
 
