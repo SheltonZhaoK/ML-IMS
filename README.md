@@ -109,7 +109,20 @@ Additionally, in Auditing section of IMS_parameters.yaml, the variable numRepeat
 ## Citation
 To cite this work:
 ```
-@inproceedings{Zhao_2023, address={New York, NY, USA}, series={BCB ’23}, title={An Ensemble Machine Learning Approach for Benchmarking and Selection of scRNA-seq Integration Methods}, ISBN={9798400701269}, url={https://dl.acm.org/doi/10.1145/3584371.3613072}, DOI={10.1145/3584371.3613072}, booktitle={Proceedings of the 14th ACM International Conference on Bioinformatics, Computational Biology, and Health Informatics}, publisher={Association for Computing Machinery}, author={Zhao, Konghao and Bhandari, Sapan and Whitener, Nathan P and Grayson, Jason M and Khuri, Natalia}, year={2023}, month=oct, pages={1–10}, collection={BCB ’23} }
+@inproceedings{Zhao_2023,
+address={New York, NY, USA},
+series={BCB ’23},
+title={An Ensemble Machine Learning Approach for Benchmarking and Selection of scRNA-seq Integration Methods},
+ISBN={9798400701269},
+url={https://dl.acm.org/doi/10.1145/3584371.3613072},
+DOI={10.1145/3584371.3613072},
+booktitle={Proceedings of the 14th ACM International Conference on Bioinformatics, Computational Biology, and Health Informatics},
+publisher={Association for Computing Machinery},
+author={Zhao, Konghao and Bhandari, Sapan and Whitener, Nathan P and Grayson, Jason M and Khuri, Natalia},
+year={2023},
+month=oct,
+pages={1–10},
+collection={BCB ’23} }
 
 ```
 
