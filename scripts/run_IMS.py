@@ -109,14 +109,14 @@ Print and export the results
 def format_results(report, batchReport, batchExplore, outputDirectory):
     if batchExplore == True:
         print(batchReport)
-    report = report.sort_values(by=['IMSS'])
+    # report = report.sort_values(by=['IMSS'])
     print(report)
 
     '''
     Change output directory if necessary
     '''
-    report.to_csv(f'{outputDirectory}{benchmark}_integration_selection_{"".join(auditors)}.csv')
-    batchReport.to_csv(f'{outputDirectory}{benchmark}_integrations_batch_explore.csv')
+    report.to_csv(os.path.join(outputDirectory, f"{benchmark}_integration_selection_{"".join(auditors)}.csv"))
+    batchReport.to_csv(os.path.join(outputDirectory, f"{benchmark}_integrations_batch_explore.csv"))
 
 def main(inTrainingCells, testSampling, numTests, numRepeats, inputDirectory, outputDirectory, benchmark, integrations, batchDict, multiprocessing, auditors, batchExplore):
     report = pd.DataFrame(columns = ["Integrations", "IMSS"])
@@ -128,9 +128,9 @@ def main(inTrainingCells, testSampling, numTests, numRepeats, inputDirectory, ou
         Change input data if necessray
         '''
         col2balance, label = batchDict[benchmark], batchDict[benchmark]
-        dataDir = f'{inputDirectory}{benchmark}/'
-        inputFile = f'{dataDir}{integration}_umap.csv'
-        labelFile = f'{dataDir}{integration}_labels.csv'
+        dataDir = os.path.join(inputDirectory, benchmark)
+        inputFile = os.path.join(dataDir, f"{integration}_umap.csv")
+        labelFile = os.path.join(dataDir, f"{integration}_labels.csv")
 
         counts, annotation = read_data(inputFile, labelFile)
         dataset = Data(counts, annotation)
@@ -162,7 +162,7 @@ def main(inTrainingCells, testSampling, numTests, numRepeats, inputDirectory, ou
     print(f'Execution time: {time.time()-start} seconds')
 
 if __name__ == "__main__":
-    multiprocessing = '-c'
+    multiprocessing = '-mc'
     if len(sys.argv) > 2:
         multiprocessing = sys.argv[2]
     benchmark = sys.argv[1]
